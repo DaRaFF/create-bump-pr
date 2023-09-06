@@ -52,7 +52,7 @@ module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBran
   const newContentEncoded = Buffer.from(newContent).toString('base64')
 
   // create new release-branch
-  const branchName = `bump-to-next-minor-version-${Date.now()}`
+  const branchName = `bump-to-next-minor-version-${release}`
   console.log(`try to create branch "${branchName}"`)
   const branch = await gitCreateBranch({
     owner,
