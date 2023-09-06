@@ -28,23 +28,31 @@ const getHighestTag = async ({repo, owner, token}) => {
 }
 
 // main application
-module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBranch}) => {
+module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBranch, release}) => {
   const token = ghToken
 
   if (token === ghApprovalToken) throw new Error('gh-approval-token token must be different to the gh-token')
   const baseTagCommit = await getHighestTag({repo, owner, token})
 
-  // get README.md
-  const readmeBase64Obj = await gitGetContent({owner, repo, token, path: file})
-  console.log('readmeBase64Obj', readmeBase64Obj)
+  const fileBase64Obj = await gitGetContent({owner, repo, token, path: file})
+  console.log('fileBase64Obj', fileBase64Obj)
+  const content = Buffer.from(fileBase64Obj.content, 'base64').toString('ascii')
 
-  // add an empty line to the readme to have a code diff for the upcoming pull request
-  const readme = Buffer.from(readmeBase64Obj.content, 'base64').toString('ascii')
-  const newLineReadme = `\n ${readme}`
-  const newLineReadmeEncoded = Buffer.from(newLineReadme).toString('base64')
+  let newContent
+  if (file === "renovate.json") {
+    // Replace baseBranches with new release branch
+    const contentJson = JSON.parse(content)
+    contentJson.baseBranches.splice(1, 0, release)
+    contentJson.baseBranches = contentJson.baseBranches.slice(0,4)
+    newContent = JSON.stringify(contentJson)
+  } else {
+    // add an empty line to the readme to have a code diff for the upcoming pull request
+    newContent = `\n ${content}`
+  }
+  const newContentEncoded = Buffer.from(newContent).toString('base64')
 
   // create new release-branch
-  const branchName = `bump-to-next-minor-version-${Date.now()}`
+  const branchName = `bump-to-next-minor-version-${release}`
   console.log(`try to create branch "${branchName}"`)
   const branch = await gitCreateBranch({
     owner,
@@ -59,10 +67,10 @@ module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBran
     owner,
     repo,
     token,
-    path: readmeBase64Obj.path,
+    path: fileBase64Obj.path,
     message: `feat(release-management): Bump minor version for release management`,
-    content: newLineReadmeEncoded,
-    sha: readmeBase64Obj.sha,
+    content: newContentEncoded,
+    sha: fileBase64Obj.sha,
     branch: branchName
   })
 
