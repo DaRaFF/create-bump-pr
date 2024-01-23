@@ -6,7 +6,7 @@ const argv = require('yargs')
     type: 'string'
   })
   .option('file', {
-    description: 'append an empty space space to this file (one needs a file diff to create a bump PR)',
+    description: 'appends an empty space to this file (one needs a file diff to create a bump PR)',
     type: 'string',
     default: 'README.md'
   })
@@ -14,6 +14,10 @@ const argv = require('yargs')
     description: 'create a bump PR onto this branch',
     type: 'string',
     default: 'master'
+  })
+  .option('postfix', {
+    description: 'postfix name of the PR branch - `bump-to-next-minor-version-<postfix>`',
+    type: 'string'
   })
   .help(false)
   .version(false)

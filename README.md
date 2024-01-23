@@ -21,7 +21,10 @@ npx @daraff/create-bump-pr \
 
 
 **Arguments**
+
 - `--owner` - Github owner of the repo where you want to create the Pull Request
 - `--repo` - Github repo where you want to create the Pull Request
 - `--gh-token` - Github token of a user to create the PR with
-- `--target-branch` - default: `master`, but you can overwrite it
+- `--target-branch` - default: `master`, creates a bump PR towards the target-branch
+- `--file` - (optional) default: `README.md`
+- `--postfix` - (optional) the name of the PR branch - `bump-to-next-minor-version-<postfix>`

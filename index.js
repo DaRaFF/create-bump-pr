@@ -28,7 +28,7 @@ const getHighestTag = async ({repo, owner, token}) => {
 }
 
 // main application
-module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBranch}) => {
+module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBranch, postfix}) => {
   const token = ghToken
 
   if (token === ghApprovalToken) throw new Error('gh-approval-token token must be different to the gh-token')
@@ -44,7 +44,7 @@ module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBran
   const newLineReadmeEncoded = Buffer.from(newLineReadme).toString('base64')
 
   // create new release-branch
-  const branchName = `bump-to-next-minor-version-${Date.now()}`
+  const branchName = postfix ? `bump-to-next-minor-version-${postfix}` : `bump-to-next-minor-version-${Date.now()}`
   console.log(`try to create branch "${branchName}"`)
   const branch = await gitCreateBranch({
     owner,
