@@ -14,6 +14,7 @@
     "yargs": "^12.0.2"
   },
   "scripts": {
+    "lint": "eslint .",
     "semantic-release": "semantic-release",
     "travis-deploy-once": "travis-deploy-once"
   },
@@ -22,6 +23,7 @@
     "url": "git+https://github.com/DaRaFF/create-bump-pr.git"
   },
   "devDependencies": {
+    "eslint": "^8.56.0",
     "semantic-release": "^15.12.0",
     "travis-deploy-once": "^5.0.9"
   },
