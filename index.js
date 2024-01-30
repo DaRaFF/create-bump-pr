@@ -28,23 +28,41 @@ const getHighestTag = async ({repo, owner, token}) => {
 }
 
 // main application
-module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBranch, postfix}) => {
+module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBranch, postfix, branch}) => { // eslint-disable-line max-len
   const token = ghToken
   const baseTagCommit = await getHighestTag({repo, owner, token})
 
-  // get README.md
-  const readmeBase64Obj = await gitGetContent({owner, repo, token, path: file})
-  console.log('readmeBase64Obj', readmeBase64Obj)
+  // get README.md or renovate.json
+  const isRenovateJSON = file === 'renovate.json'
+  const base64Obj = await gitGetContent({owner, repo, token, path: file})
+  console.log('base64Obj', base64Obj)
 
-  // add an empty line to the readme to have a code diff for the upcoming pull request
-  const readme = Buffer.from(readmeBase64Obj.content, 'base64').toString('ascii')
-  const newLineReadme = `\n ${readme}`
-  const newLineReadmeEncoded = Buffer.from(newLineReadme).toString('base64')
+  let contentUpdate
+  if (isRenovateJSON) {
+    if (!branch) throw new Error('branch is required for renovate.json')
+    const renovate = Buffer.from(base64Obj.content, 'base64').toString('ascii')
+    const renovateJSON = JSON.parse(renovate)
+    // add release branch info to (renovate.json).baseBranches
+    if (renovateJSON.baseBranches) {
+      renovateJSON.baseBranches.push(branch)
+    } else {
+      throw new Error(`can't extend renovate.json baseBranches with ${branch}`)
+    }
+    const updatedRenovate = JSON.stringify(renovateJSON, null, 2)
+    contentUpdate = Buffer.from(updatedRenovate).toString('base64')
+  } else {
+    // add an empty line to the readme to have a code diff for the upcoming pull request
+    const readme = Buffer.from(base64Obj.content, 'base64').toString('ascii')
+    const newLineReadme = `\n ${readme}`
+    contentUpdate = Buffer.from(newLineReadme).toString('base64')
+  }
 
-  // create new release-branch
-  const branchName = postfix ? `bump-to-next-minor-version-${postfix}` : `bump-to-next-minor-version-${Date.now()}`
+  // create bump pr branch
+  const branchName = postfix
+    ? `bump-to-next-minor-version-${postfix}`
+    : `bump-to-next-minor-version-${Date.now()}`
   console.log(`try to create branch "${branchName}"`)
-  const branch = await gitCreateBranch({
+  await gitCreateBranch({
     owner,
     repo,
     token,
@@ -52,15 +70,15 @@ module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBran
     sha: baseTagCommit.sha
   })
 
-  // add a new commit to the release-branch
+  // add commit to bump pr branch
   const updatedContent = await updateContent({
     owner,
     repo,
     token,
-    path: readmeBase64Obj.path,
+    path: base64Obj.path,
     message: `feat(release-management): Bump minor version for release management`,
-    content: newLineReadmeEncoded,
-    sha: readmeBase64Obj.sha,
+    content: contentUpdate,
+    sha: base64Obj.sha,
     branch: branchName
   })
 

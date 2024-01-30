@@ -8,6 +8,7 @@ const argv = require('yargs')
   .option('file', {
     description: 'appends an empty space to this file (one needs a file diff to create a bump PR)',
     type: 'string',
+    choices: ['README.md', 'renovate.json'],
     default: 'README.md'
   })
   .option('target-branch', {
@@ -18,6 +19,10 @@ const argv = require('yargs')
   .option('postfix', {
     description: 'postfix name of the PR branch - `bump-to-next-minor-version-<postfix>`',
     type: 'string'
+  })
+  .option('branch', {
+    description: 'adds branch to `baseBranches` in renovate.json, e.g. release-2023-01-08. If set, renovate also checks for updates in the branch.',
+    type: 'string',
   })
   .help(false)
   .version(false)

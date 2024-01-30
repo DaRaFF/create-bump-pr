@@ -22,9 +22,10 @@ npx @daraff/create-bump-pr \
 
 **Arguments**
 
-- `--owner` - Github owner of the repo where you want to create the Pull Request
-- `--repo` - Github repo where you want to create the Pull Request
-- `--gh-token` - Github token of a user to create the PR with
-- `--target-branch` - default: `master`, creates a bump PR towards the target-branch
-- `--file` - (optional) default: `README.md`
-- `--postfix` - (optional) the name of the PR branch - `bump-to-next-minor-version-<postfix>`
+- `--owner`         (required) GitHub owner of the repo where you want to create the Pull Request
+- `--repo`          (required) GitHub repo where you want to create the Pull Request
+- `--gh-token`      (required) GitHub token of a user to create the Pull Request with
+- `--target-branch` (optional) creates a bump PR towards the target-branch (default: `master`)
+- `--file`          (optional) the options are `README.md` | `renovate.json` (default: `README.md`)
+- `--postfix`       (optional) the name of the PR branch - `bump-to-next-minor-version-<postfix>`
+- `--branch`        (optional) only needed when file=`renovate.json`. Adds branch to `baseBranches` in `renovate.json`, e.g. `release-2023-01-08`. If set, renovate also checks for updates in the branch.'
