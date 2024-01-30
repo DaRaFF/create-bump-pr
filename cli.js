@@ -21,8 +21,8 @@ const argv = require('yargs')
     type: 'string'
   })
   .option('branch', {
-    description: 'adds branch to `baseBranches` in renovate.json, e.g. release-2023-01-08. If set, renovate also checks for updates in the branch.',
-    type: 'string',
+    description: 'adds branch to `baseBranches` in renovate.json, e.g. release-2023-01-08. If set, renovate also checks for updates in the branch.', // eslint-disable-line max-len
+    type: 'string'
   })
   .help(false)
   .version(false)
@@ -31,7 +31,7 @@ const run = require('./index')
 
 run(argv)
   .then((pullRequest) => {
-      console.log(`
+    console.log(`
         The PR for the release-management bump has been opened at
         ${pullRequest.html_url}
       `)

@@ -102,8 +102,8 @@ Bump minor version for release management
       owner,
       repo,
       token: ghApprovalToken,
-      pull_number: pullRequest.number,
-      commit_id: updatedContent.commit.sha
+      pullNumber: pullRequest.number,
+      commitId: updatedContent.commit.sha
     })
   }
 
