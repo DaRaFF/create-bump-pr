@@ -1,11 +1,11 @@
 const _ = require('lodash')
 const semver = require('semver')
-const gitGetTags = require('./lib/git/get_tags')
-const gitGetContent = require('./lib/git/get_content')
-const gitCreateBranch = require('./lib/git/create_branch')
-const updateContent = require('./lib/git/update_content')
-const createPullRequest = require('./lib/git/create_pull_request')
-const createApprovalForPullRequest = require('./lib/git/create_approval_for_pull_request')
+const gitGetTags = require('./git/get-tags')
+const gitGetContent = require('./git/get-content')
+const gitCreateBranch = require('./git/create-branch')
+const updateContent = require('./git/update-content')
+const createPullRequest = require('./git/create-pull-request')
+const createApprovalForPullRequest = require('./git/create-approval-for-pull-request')
 
 // @return {'tag': '1.0.1', 'sha': '1234'}
 const getHighestTag = async ({repo, owner, token}) => {
