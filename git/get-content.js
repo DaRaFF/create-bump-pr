@@ -7,6 +7,7 @@ module.exports = async ({
   owner, repo, token, path
 }) => {
   try {
+    console.log('get-content.js', `https://api.github.com/repos/${owner}/${repo}/contents/${path}`)
     return await request({
       method: 'GET',
       uri: `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,

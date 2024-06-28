@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const semver = require('semver')
+const {parse, stringify} = require('comment-json')
 const gitGetTags = require('./git/get-tags')
 const gitGetContent = require('./git/get-content')
 const gitCreateBranch = require('./git/create-branch')
@@ -33,7 +34,7 @@ module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBran
   const baseTagCommit = await getHighestTag({repo, owner, token})
 
   // get README.md or renovate.json
-  const isRenovateJSON = file === 'renovate.json'
+  const isRenovateJSON = file === 'renovate.json' || file === 'renovate.json5'
   const base64Obj = await gitGetContent({owner, repo, token, path: file})
   console.log('base64Obj', base64Obj)
 
@@ -41,14 +42,14 @@ module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBran
   if (isRenovateJSON) {
     if (!branch) throw new Error('branch is required for renovate.json')
     const renovate = Buffer.from(base64Obj.content, 'base64').toString('ascii')
-    const renovateJSON = JSON.parse(renovate)
+    const renovateJSON = parse(renovate)
     // add release branch info to (renovate.json).baseBranches
     if (renovateJSON.baseBranches) {
       renovateJSON.baseBranches.push(branch)
     } else {
       throw new Error(`can't extend renovate.json baseBranches with ${branch}`)
     }
-    const updatedRenovate = JSON.stringify(renovateJSON, null, 2)
+    const updatedRenovate = stringify(renovateJSON, null, 2)
     contentUpdate = Buffer.from(updatedRenovate).toString('base64')
   } else {
     // add an empty line to the readme to have a code diff for the upcoming pull request

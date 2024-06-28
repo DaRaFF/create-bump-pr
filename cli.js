@@ -8,7 +8,7 @@ const argv = require('yargs')
   .option('file', {
     description: 'appends an empty space to this file (one needs a file diff to create a bump PR)',
     type: 'string',
-    choices: ['README.md', 'renovate.json'],
+    choices: ['README.md', 'renovate.json', 'renovate.json5'],
     default: 'README.md'
   })
   .option('target-branch', {

@@ -26,6 +26,6 @@ npx @daraff/create-bump-pr \
 - `--repo`          (required) GitHub repo where you want to create the Pull Request
 - `--gh-token`      (required) GitHub token of a user to create the Pull Request with
 - `--target-branch` (optional) creates a bump PR towards the target-branch (default: `master`)
-- `--file`          (optional) the options are `README.md` | `renovate.json` (default: `README.md`)
+- `--file`          (optional) the options are `README.md` | `renovate.json` | `renovate.json5`  (default: `README.md`)
 - `--postfix`       (optional) the name of the PR branch - `bump-to-next-minor-version-<postfix>`
 - `--branch`        (optional) only needed when file=`renovate.json`. Adds branch to `baseBranches` in `renovate.json`, e.g. `release-2023-01-08`. If set, renovate also checks for updates in the branch.'
